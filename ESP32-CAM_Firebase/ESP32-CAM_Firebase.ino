@@ -1,24 +1,24 @@
 /*
-ESP32-CAM Save a captured photo(Base64) to firebase. 
-Author : ChungYi Fu (Kaohsiung, Taiwan)  2019-8-16 23:00
-https://www.facebook.com/francefu
+  ESP32-CAM Save a captured photo(Base64) to firebase.
+  Author : ChungYi Fu (Kaohsiung, Taiwan)  2019-8-16 23:00
+  https://www.facebook.com/francefu
 
-Arduino IDE Library
-Firebase ESP32 Client by Mobizt version 3.2.1
+  Arduino IDE Library
+  Firebase ESP32 Client by Mobizt version 3.8.26
 
-ESP32-CAM How to save a captured photo to Firebase
-https://youtu.be/Hx7bdpev1ug
+  ESP32-CAM How to save a captured photo to Firebase
+  https://youtu.be/Hx7bdpev1ug
 
-How to set up Firebase
-https://iotdesignpro.com/projects/iot-controlled-led-using-firebase-database-and-esp32
+  How to set up Firebase
+  https://iotdesignpro.com/projects/iot-controlled-led-using-firebase-database-and-esp32
 */
 
 const char* ssid = "xxxxxxxxxx";
-const char* password = "xxxxxxxxxx";
+const char* password = "xxxxxxxxxxx";
 
-//https://console.firebase.google.com/project/xxxxxxxxxx/settings/serviceaccounts/databasesecrets
-String FIREBASE_HOST = "xxxxxxxxxx.firebaseio.com";
-String FIREBASE_AUTH = "xxxxxxxxxxxxxxxxxxxx";
+//https://console.firebase.google.com/project/esp32cam-97601/settings/serviceaccounts/databasesecrets
+String FIREBASE_HOST = "xxxxxxxxxxx.firebaseio.com";
+String FIREBASE_AUTH = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 #include "FirebaseESP32.h"
 FirebaseData firebaseData;
@@ -32,14 +32,13 @@ FirebaseData firebaseData;
 
 // WARNING!!! Make sure that you have either selected ESP32 Wrover Module,
 //            or another board which has PSRAM enabled
+// AI THINKER PINOUT
 
-//CAMERA_MODEL_AI_THINKER
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM      0
 #define SIOD_GPIO_NUM     26
 #define SIOC_GPIO_NUM     27
-
 #define Y9_GPIO_NUM       35
 #define Y8_GPIO_NUM       34
 #define Y7_GPIO_NUM       39
@@ -133,9 +132,11 @@ void setup() {
   Firebase.setMaxErrorQueue(firebaseData, 30); 
   Firebase.enableClassicRequest(firebaseData, true);
 
-  String jsonData = "{\"photo\":\"" + Photo2Base64() + "\"}";
+  FirebaseJson jsonData;
+  jsonData.set("photo" , Photo2Base64());
   String photoPath = "/esp32-cam";
-  if (Firebase.pushJSON(firebaseData, photoPath, jsonData)) {
+
+    if (Firebase.pushJSON(firebaseData, photoPath, jsonData)) {
     Serial.println(firebaseData.dataPath());
     Serial.println(firebaseData.pushName());
     Serial.println(firebaseData.dataPath() + "/"+ firebaseData.pushName());
